@@ -775,9 +775,9 @@ class _AdversarialFairness(BaseEstimator):
         elif isinstance(self.predictor_function_, str):
             kw = self.predictor_function_
             if kw == "binary":
-                self.predictor_function_ = lambda pred: (
-                    pred >= self.threshold_value
-                ).astype(float)
+                # self.predictor_function_ = lambda pred: (
+                #     pred >= self.threshold_value
+                # ).astype(float)
             elif kw == "category":
 
                 def loss(pred):
