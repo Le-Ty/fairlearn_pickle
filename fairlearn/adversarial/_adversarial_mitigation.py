@@ -757,6 +757,9 @@ class _AdversarialFairness(BaseEstimator):
             )
         )
 
+    def lambda_replace(self, pred):
+        return (pred >= self.threshold_value).astype(float)
+    
     def _set_predictor_function(self):
         """
         Infer prediction function.
@@ -775,10 +778,7 @@ class _AdversarialFairness(BaseEstimator):
         elif isinstance(self.predictor_function_, str):
             kw = self.predictor_function_
             if kw == "binary":
-                print('Im trying')
-                # self.predictor_function_ = lambda pred: (
-                #     pred >= self.threshold_value
-                # ).astype(float)
+                self.predictor_function_ = lambda_replace(self, pred)
             elif kw == "category":
 
                 def loss(pred):
