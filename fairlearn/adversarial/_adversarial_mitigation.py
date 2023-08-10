@@ -789,8 +789,8 @@ class _AdversarialFairness(BaseEstimator):
                     return b
 
                 self.predictor_function_ = loss
-            elif kw == "continuous":
-                self.predictor_function_ = lambda pred: pred
+            # elif kw == "continuous":
+            #     self.predictor_function_ = lambda pred: pred
             else:
                 raise ValueError(_PREDICTION_FUNCTION_AMBIGUOUS)
         else:
