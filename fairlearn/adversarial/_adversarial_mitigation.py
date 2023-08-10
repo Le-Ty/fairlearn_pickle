@@ -756,9 +756,6 @@ class _AdversarialFairness(BaseEstimator):
                 + "make sure to have installed the corresponding backend",
             )
         )
-
-    def _lambda_replace(self, pred):
-        return (pred >= self.threshold_value).astype(float)
     
     def _set_predictor_function(self):
         """
@@ -778,7 +775,10 @@ class _AdversarialFairness(BaseEstimator):
         elif isinstance(self.predictor_function_, str):
             kw = self.predictor_function_
             if kw == "binary":
-                self.predictor_function_ = self._lambda_replace( pred)
+                def lambda_replace(pred):
+                    return (pred >= self.threshold_value).astype(float)
+                self.predictor_function_ = lambda_replace
+                
             elif kw == "category":
 
                 def loss(pred):
