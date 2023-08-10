@@ -633,7 +633,7 @@ class _AdversarialFairness(BaseEstimator):
         X = check_X(X)
 
         Y_pred = self.backendEngine_.evaluate(X)
-        Y_pred = self.predictor_function_(Y_pred, self.threshold_value)
+        Y_pred = self.predictor_function_(Y_pred)
         Y_pred = self._y_transform.inverse_transform(Y_pred)
         return Y_pred
 
@@ -785,7 +785,7 @@ class _AdversarialFairness(BaseEstimator):
         elif isinstance(self.predictor_function_, str):
             kw = self.predictor_function_
             if kw == "binary":
-                self.predictor_function_ = replacer
+                self.predictor_function_ = self.replacer
                 
                 
             elif kw == "category":
