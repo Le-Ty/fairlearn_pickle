@@ -37,6 +37,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def lambda_replace(pred):
+    return (pred >= self.threshold_value).astype(float)
 
 class _AdversarialFairness(BaseEstimator):
     r"""Train PyTorch or TensorFlow predictors while mitigating unfairness .
@@ -775,8 +777,6 @@ class _AdversarialFairness(BaseEstimator):
         elif isinstance(self.predictor_function_, str):
             kw = self.predictor_function_
             if kw == "binary":
-                def lambda_replace(pred):
-                    return (pred >= self.threshold_value).astype(float)
                 self.predictor_function_ = lambda_replace
                 
             elif kw == "category":
