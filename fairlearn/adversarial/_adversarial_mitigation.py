@@ -37,8 +37,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def lambda_replace(pred):
-    return (pred >= self.threshold_value).astype(float)
+class Replace:
+    def __init__(self, threshold_value):
+        self.threshold_value = threshold_value
+
+    def __call__(self, pred):
+        return (pred >= self.threshold_value).astype(float)
+
+def lambda_replace(pred,threshold_value):
+    return (pred >= threshold_value).astype(float)
 
 class _AdversarialFairness(BaseEstimator):
     r"""Train PyTorch or TensorFlow predictors while mitigating unfairness .
@@ -265,6 +272,7 @@ class _AdversarialFairness(BaseEstimator):
         self.cuda = cuda
         self.warm_start = warm_start
         self.random_state = random_state
+        self.replacer = Replace(self.threshold_value)
 
     def __setup(self, X, Y, A):
         """
@@ -625,7 +633,7 @@ class _AdversarialFairness(BaseEstimator):
         X = check_X(X)
 
         Y_pred = self.backendEngine_.evaluate(X)
-        Y_pred = self.predictor_function_(Y_pred)
+        Y_pred = self.predictor_function_(Y_pred, self.threshold_value)
         Y_pred = self._y_transform.inverse_transform(Y_pred)
         return Y_pred
 
@@ -777,7 +785,8 @@ class _AdversarialFairness(BaseEstimator):
         elif isinstance(self.predictor_function_, str):
             kw = self.predictor_function_
             if kw == "binary":
-                self.predictor_function_ = lambda_replace
+                self.predictor_function_ = replacer
+                
                 
             elif kw == "category":
 
